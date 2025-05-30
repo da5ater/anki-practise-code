@@ -1,6 +1,16 @@
 const mongoose = require('mongoose');
-const { default: test } = require('node:test');
+const config = require('config');
 
+
+
+let env = process.env.NODE_ENV;
+
+
+console.log(`app name is ${config.get('name')}`);
+
+
+
+// Connect to MongoDB using Mongoose
 mongoose.connect('mongodb://localhost:27017/mydatabase')
 
 const courseSchema = new mongoose.Schema({
@@ -28,4 +38,4 @@ async function testPagination() {
     console.log('-------------------');
     await getCourses(3);
 }
-testPagination();
+// testPagination();
