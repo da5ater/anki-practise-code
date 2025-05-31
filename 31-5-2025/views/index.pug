@@ -1,0 +1,12 @@
+doctype html
+html
+    head
+        title Courses
+    body
+        h1 Courses
+        ul
+            each course in courses
+                li
+                    a(href=`/courses/${course.id}`) #{course.name}
+        h2 Time
+            p #{Time}

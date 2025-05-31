@@ -1,6 +1,15 @@
 const express = require("express");
 const app = express();
+const pug = require("pug");
+const path = require("path");
+const { time } = require("console");
 const PORT = 3000;
+
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
+
+
+
 const courses = [
     { id: 1, name: "course 1" },
     { id: 2, name: "course 2" },
@@ -17,6 +26,16 @@ app.get("/courses/:id", (req, res) => {
     }
 
     res.json(course);
+});
+
+app.get("/dynamic", (req, res) => {
+
+    res.render('index', {
+        title: "Dynamic Pug Rendering",
+        message: "This is a dynamic message rendered using Pug",
+        courses: courses,
+        Time: new Date().toLocaleTimeString()
+    });
 });
 
 app.get("/", (req, res) => {
