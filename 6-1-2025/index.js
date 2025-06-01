@@ -2,33 +2,34 @@ const mongoose = require('mongoose');
 
 
 
-mongoose.connect('mongodb://localhost:27017/ankiPractisePlayGround')
+mongoose.connect('mongodb://localhost/playground')
 
-    .then(() => console.log('MongoDB connected...'))
+    .then(() => console.log('Connected to MongoDB...'))
 
-    .catch(err => console.log(err));
+    .catch(err => console.error('Could not connect to MongoDB...', err));
 
 
 
-const courseSchema = new mongoose.Schema({
+const Author = mongoose.model('Author', new mongoose.Schema({
 
     name: String,
 
-    author: String,
+    bio: String,
 
-    tags: [String],
+    website: String
 
-    date: { type: Date, default: Date.now },
-
-    isPublished: Boolean,
-
-    price: Number
-
-});
+}));
 
 
 
-const Course = mongoose.model('Course', courseSchema);
+const Course = mongoose.model('Course', new mongoose.Schema({
+
+    name: String,
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Author'
+    }
+}));
 
 
 async function updateCourse(id, updates) {
@@ -65,11 +66,11 @@ async function createCourse(author, name, tags, price, isPublished) {
 
 
 // createCourse('John Doe', 'Node.js Course', ['node', 'backend'], 20, true);
-updateCourse('683c44fe104722c8691112bf', {
-    name: 'Updated Node.js Course',
-    price: 25,
-    isPublished: false,
-    author: 'mohamed'
-})
-    .then(() => console.log('Course updated successfully'))
-    .catch(err => console.error('Error updating course:', err));
+// updateCourse('683c44fe104722c8691112bf', {
+//     name: 'Updated Node.js Course',
+//     price: 25,
+//     isPublished: false,
+//     author: 'mohamed'
+// })
+//     .then(() => console.log('Course updated successfully'))
+//     .catch(err => console.error('Error updating course:', err));
