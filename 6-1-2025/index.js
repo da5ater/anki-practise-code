@@ -24,7 +24,7 @@ const Author = mongoose.model('Author', new mongoose.Schema({
 
 const Course = mongoose.model('Course', new mongoose.Schema({
 
-    name: String,
+    title: String,
     author: {
         type: Author.schema,
         required: true
@@ -47,15 +47,12 @@ async function updateCourse(id, updates) {
     console.log(result);
 }
 
-async function createCourse(author, name, tags, price, isPublished) {
+async function createCourse(title, authorObj) {
     // Create a new course
 
     const course = new Course({
-        author,
-        name,
-        tags,
-        price,
-        isPublished
+        title,
+        author: authorObj
     });
 
     const result = await course.save();
@@ -65,12 +62,30 @@ async function createCourse(author, name, tags, price, isPublished) {
 }
 
 
-// createCourse('John Doe', 'Node.js Course', ['node', 'backend'], 20, true);
-// updateCourse('683c44fe104722c8691112bf', {
-//     name: 'Updated Node.js Course',
-//     price: 25,
-//     isPublished: false,
-//     author: 'mohamed'
-// })
-//     .then(() => console.log('Course updated successfully'))
-//     .catch(err => console.error('Error updating course:', err));
+async function listCourses() {
+    // List all courses with their authors
+
+    const courses = await Course.find({ 'author.name': 'John Doe' });
+
+    console.log(courses);
+}
+
+
+// listCourses();
+
+
+// updateCourse('683c480d93504901d18d01ca', {
+//     title: 'Updated Node.js Course',
+//     author: {
+//         name: 'moahmed khater',
+//         bio: 'A passionate JavaScript developer',
+//         website: 'http://janedoe.com'
+//     }
+// });
+
+// createCourse('Node.js Course', {
+//     name: 'John Doe',
+//     bio: 'A passionate Node.js developer',
+//     website: 'http://johndoe.com'
+// });
+
