@@ -2,35 +2,30 @@ const mongoose = require('mongoose');
 
 
 
-mongoose.connect('mongodb://localhost/playground')
+mongoose.connect('mongodb://localhost:27017/ankiPractisePlayGround')
+    .then(() => console.log('MongoDB connected...'))
+    .catch(err => console.log(err));
 
-    .then(() => console.log('Connected to MongoDB...'))
-
-    .catch(err => console.error('Could not connect to MongoDB...', err));
-
-
-
-const Author = mongoose.model('Author', new mongoose.Schema({
-
+const courseSchema = new mongoose.Schema({
     name: String,
-
-    bio: String,
-
-    website: String
-
-}));
-
-
-
-const Course = mongoose.model('Course', new mongoose.Schema({
-
-    title: String,
-    author: {
-        type: Author.schema,
-        required: true
-    }
-}));
-
+    author: String,
+    tags: {
+        type: Array,
+        validate: {
+            validator: async function (v) {
+                setTimeout(() => {
+                    console.log('Validating tags...');
+                    return v && v.length > 0;
+                }, 1000); // Simulate async validation delay
+            },
+            message: 'course should have at least one tag from the predefined list' // custom error message for enum validation
+        }
+    },
+    date: { type: Date, default: Date.now },
+    isPublished: Boolean,
+    price: Number
+});
+const Course = mongoose.model('Course', courseSchema);
 
 async function updateCourse(id, updates) {
     // Update a course by id with partial updates

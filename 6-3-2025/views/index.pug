@@ -1,0 +1,102 @@
+doctype html
+html
+  head
+    title Course Management System
+    style.
+      body { font-family: Arial, sans-serif; margin: 40px; }
+      .container { max-width: 800px; margin: 0 auto; }
+      .form-group { margin-bottom: 15px; }
+      label { display: block; margin-bottom: 5px; font-weight: bold; }
+      input, textarea, select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+      button { background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+      button:hover { background-color: #0056b3; }
+      .course { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 4px; }
+      .api-links { margin: 20px 0; }
+      .api-links a { display: inline-block; margin-right: 15px; color: #007bff; text-decoration: none; }
+      .api-links a:hover { text-decoration: underline; }
+  body
+    .container
+      h1 Course Management System
+      
+      h2 API Endpoints
+      .api-links
+        a(href="/api/courses" target="_blank") GET /api/courses
+        a(href="/api/courses?page=1&size=5" target="_blank") GET /api/courses (paginated)
+      
+      h2 Create a New Course
+      form(id="courseForm")
+        .form-group
+          label(for="name") Course Name:
+          input(type="text" id="name" name="name" required)
+        
+        .form-group
+          label(for="author") Author:
+          input(type="text" id="author" name="author" required)
+        
+        .form-group
+          label(for="tags") Tags (comma-separated):
+          input(type="text" id="tags" name="tags" placeholder="web development, javascript, node.js" required)
+        
+        .form-group
+          label(for="price") Price:
+          input(type="number" id="price" name="price" min="10" max="200" required)
+        
+        .form-group
+          label(for="isPublished") Published:
+          select(id="isPublished" name="isPublished")
+            option(value="false") No
+            option(value="true") Yes
+        
+        button(type="submit") Create Course
+      
+      div(id="result")
+
+    script.
+      document.getElementById('courseForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(e.target);
+        const courseData = {
+          name: formData.get('name'),
+          author: formData.get('author'),
+          tags: formData.get('tags').split(',').map(tag => tag.trim()),
+          price: parseFloat(formData.get('price')),
+          isPublished: formData.get('isPublished') === 'true'
+        };
+        
+        try {
+          const response = await fetch('/api/courses', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(courseData)
+          });
+          
+          const result = await response.json();
+          
+          if (response.ok) {
+            document.getElementById('result').innerHTML = `
+              <div style="color: green; margin-top: 20px;">
+                <h3>Course Created Successfully!</h3>
+                <pre>${JSON.stringify(result, null, 2)}</pre>
+              </div>
+            `;
+            e.target.reset();
+          } else {
+            document.getElementById('result').innerHTML = `
+              <div style="color: red; margin-top: 20px;">
+                <h3>Error:</h3>
+                <p>${result.error}</p>
+              </div>
+            `;
+          }
+        } catch (error) {
+          document.getElementById('result').innerHTML = `
+            <div style="color: red; margin-top: 20px;">
+              <h3>Error:</h3>
+              <p>${error.message}</p>
+            </div>
+          `;
+        }
+      });
