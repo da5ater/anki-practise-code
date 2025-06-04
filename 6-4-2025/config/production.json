@@ -1,0 +1,9 @@
+{
+    "name": "production",
+    "database": {
+        "host": "prod-db-server",
+        "port": 5432,
+        "username": "prod_user",
+        "password": "should_be_set_via_env_var"
+    }
+}
