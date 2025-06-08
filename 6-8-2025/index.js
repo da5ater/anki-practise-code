@@ -8,22 +8,31 @@ mongoose.connect('mongodb://localhost:27017/mydatabase')
 
     .catch(err => console.log(err));
 
+
+
 const courseSchema = new mongoose.Schema({
+
     name: String,
+
     author: String,
+
     tags: {
-        type: Array,
+        type: [String],
         validate: {
-            validator: async function (v) {
-                return new Promise((resolve) => {
-                    resolve(v.length > 0); // tags must be an array with at least one element
-                });
+            validator: function (v) {
+                return v && v.length > 0;
             },
-            message: 'course should have at least one tag from the predefined list' // custom error message for enum validation
+            message: 'A course should have at least one tag.'
         }
     },
     date: { type: Date, default: Date.now },
+
     isPublished: Boolean,
+
     price: Number
+
 });
+
+
+
 const Course = mongoose.model('Course', courseSchema);
