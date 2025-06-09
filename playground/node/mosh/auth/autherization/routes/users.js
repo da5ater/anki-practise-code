@@ -10,7 +10,14 @@ const Joi = require('joi');
 
 
 // add code here ------
+router.get('/me', auth, async (req, res) => {
+    // Get the user from the token
+    const user = await User.findById(req.user._id);
 
+    if (!user) return res.status(404).send('User not found.');
+
+    res.send(user);
+});
 
 
 //----------------------
